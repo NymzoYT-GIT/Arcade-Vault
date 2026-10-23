@@ -7,6 +7,13 @@
   <meta name="theme-color" content="#050b18">
   <title>Play Game | Arcade Vault</title>
 
+  <!-- js-dos emulator -->
+  <link
+    rel="stylesheet"
+    href="https://v8.js-dos.com/latest/js-dos.css"
+  >
+  <script src="https://v8.js-dos.com/latest/js-dos.js"></script>
+
   <style>
     :root {
       --bg: #050b18;
@@ -90,6 +97,11 @@
       box-shadow: 0 0 25px #822bff12;
     }
 
+    #dos-player {
+      width: 100%;
+      min-height: 420px;
+    }
+
     .placeholder {
       max-width: 520px;
       padding: 30px;
@@ -168,16 +180,18 @@
     </section>
 
     <section class="player" id="player">
-      <div class="placeholder">
-        <div class="icon">🎮</div>
-        <h2 id="player-heading">Your game goes here</h2>
-        <p id="player-message">
-          The player interface is ready. A compatible browser game
-          or emulator still needs to be connected.
-        </p>
-        <span class="status" id="player-status">
-          Runtime not connected
-        </span>
+      <div id="dos-player">
+        <div class="placeholder">
+          <div class="icon">🎮</div>
+          <h2 id="player-heading">DOS Game Player</h2>
+          <p id="player-message">
+            The js-dos emulator library has been added.
+            A compatible, authorized DOS game bundle is still required.
+          </p>
+          <span class="status" id="player-status">
+            Emulator library added — awaiting game bundle
+          </span>
+        </div>
       </div>
     </section>
 
@@ -189,8 +203,8 @@
     <section class="info">
       <h2>About this game</h2>
       <p class="muted" id="game-description">
-        Arcade Vault will launch compatible games directly in this
-        player without requiring visitors to install an application.
+        Arcade Vault launches compatible games in your browser.
+        DOS emulation requires a compatible game bundle.
       </p>
     </section>
   </main>
@@ -203,7 +217,7 @@
       demo: {
         title: "Arcade Vault Demo",
         description:
-          "This is the initial player page. No game runtime has been connected yet."
+          "The player is ready for compatible browser games and DOS emulation."
       },
       amongus: {
         title: "Among Us",
@@ -213,7 +227,7 @@
       dosdemo: {
         title: "DOS Game Demo",
         description:
-          "This slot will be used to test a DOS game with a compatible browser emulator and authorized game files."
+          "The js-dos library is included. A compatible, authorized DOS game bundle must be connected next."
       }
     };
 
@@ -224,25 +238,32 @@
     };
 
     document.title = selected.title + " | Arcade Vault";
-    document.getElementById("game-title").textContent = selected.title;
+
+    document.getElementById("game-title").textContent =
+      selected.title;
+
     document.getElementById("player-heading").textContent =
       selected.title;
+
     document.getElementById("game-description").textContent =
       selected.description;
 
-    document.getElementById("fullscreen").addEventListener("click", async () => {
-      const player = document.getElementById("player");
+    document.getElementById("fullscreen").addEventListener(
+      "click",
+      async () => {
+        const player = document.getElementById("player");
 
-      try {
-        if (!document.fullscreenElement) {
-          await player.requestFullscreen();
-        } else {
-          await document.exitFullscreen();
+        try {
+          if (!document.fullscreenElement) {
+            await player.requestFullscreen();
+          } else {
+            await document.exitFullscreen();
+          }
+        } catch (error) {
+          alert("Fullscreen is not available in this browser.");
         }
-      } catch (error) {
-        alert("Fullscreen is not available in this browser.");
       }
-    });
+    );
 
     document.getElementById("reload").addEventListener("click", () => {
       window.location.reload();
