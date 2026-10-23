@@ -1,0 +1,839 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050b18">
+  <title>Arcade Vault</title>
+
+  <style>
+    :root {
+      --bg: #050b18;
+      --panel: #081529;
+      --border: #183555;
+      --cyan: #08d9f4;
+      --purple: #a52cff;
+      --text: #eef7ff;
+      --muted: #9db7d7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      padding: 16px 24px;
+      background: #040a16;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      min-width: 265px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .brand span {
+      color: var(--cyan);
+    }
+
+    .tagline {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    .search {
+      flex: 1;
+      min-width: 100px;
+      padding: 14px 18px;
+      color: white;
+      background: #0a1730;
+      border: 1px solid #214675;
+      border-radius: 15px;
+      outline: none;
+    }
+
+    .search:focus {
+      border-color: var(--cyan);
+    }
+
+    .topnav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .topnav a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .topnav a:hover {
+      color: var(--cyan);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr);
+      min-height: calc(100vh - 75px);
+    }
+
+    .sidebar {
+      padding: 25px 10px;
+      border-right: 1px solid var(--border);
+    }
+
+    .side-link {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      margin-bottom: 5px;
+      text-align: left;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .side-link:hover,
+    .side-link.active {
+      color: var(--cyan);
+      background: #0b2037;
+    }
+
+    .promo {
+      margin-top: 100px;
+      padding: 20px 12px;
+      text-align: center;
+      border: 1px solid var(--purple);
+      border-radius: 14px;
+      box-shadow: 0 0 20px #822bff20;
+    }
+
+    .promo-icon {
+      font-size: 35px;
+    }
+
+    .promo p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 275px;
+      gap: 18px;
+    }
+
+    .hero {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 315px;
+      overflow: hidden;
+      padding: 30px;
+      background:
+        radial-gradient(circle at 85% 45%, #44218b 0, transparent 32%),
+        linear-gradient(110deg, #071226, #0b1530);
+      border: 1px solid #5943bb;
+      border-radius: 15px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 420px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 7px 13px;
+      color: #e2d6ff;
+      background: #4916a0;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .hero h1 {
+      margin: 14px 0 8px;
+      font-size: 36px;
+    }
+
+    .hero p {
+      color: #c3d8f0;
+      line-height: 1.6;
+    }
+
+    .hero-art {
+      position: absolute;
+      right: 10px;
+      bottom: 5px;
+      font-size: clamp(80px, 12vw, 145px);
+      opacity: 0.9;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 15px 0;
+    }
+
+    .chip {
+      padding: 5px 10px;
+      color: #c5ddf9;
+      background: #122846;
+      border: 1px solid #23466e;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    .primary,
+    .secondary {
+      padding: 12px 17px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .primary {
+      color: #031323;
+      background: var(--cyan);
+      border: 1px solid var(--cyan);
+    }
+
+    .secondary {
+      color: white;
+      background: #071326;
+      border: 1px solid var(--cyan);
+    }
+
+    .primary:hover {
+      filter: brightness(1.15);
+    }
+
+    .secondary:hover {
+      background: #122846;
+    }
+
+    .section-title {
+      margin: 25px 0 13px;
+      font-size: 22px;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .category {
+      min-height: 115px;
+      padding: 13px;
+      text-align: left;
+      color: white;
+      background: var(--panel);
+      border: 1px solid #17528a;
+      border-radius: 11px;
+    }
+
+    .category:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px #00dfff18;
+    }
+
+    .category-icon {
+      margin-bottom: 8px;
+      font-size: 25px;
+    }
+
+    .category strong,
+    .category small {
+      display: block;
+    }
+
+    .category small {
+      margin-top: 5px;
+      color: var(--muted);
+    }
+
+    .games-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .games-heading button {
+      color: var(--cyan);
+      background: none;
+      border: none;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .game-card {
+      min-width: 0;
+      overflow: hidden;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      transition: transform 0.2s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .game-art {
+      display: grid;
+      height: 115px;
+      place-items: center;
+      background: linear-gradient(135deg, #142a52, #071326);
+      border-bottom: 1px solid var(--border);
+      font-size: 48px;
+    }
+
+    .game-info {
+      padding: 11px;
+    }
+
+    .game-info strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .game-info .chips {
+      margin-bottom: 0;
+    }
+
+    .rail-panel {
+      margin-bottom: 15px;
+      padding: 17px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+    }
+
+    .rail-panel h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .rail-panel p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .quick {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 13px 10px;
+      margin-top: 9px;
+      text-align: left;
+      color: white;
+      background: #09172e;
+      border: 1px solid var(--purple);
+      border-radius: 9px;
+    }
+
+    .quick:hover {
+      border-color: var(--cyan);
+    }
+
+    .recent {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+    }
+
+    .recent-icon {
+      display: grid;
+      width: 45px;
+      height: 45px;
+      flex-shrink: 0;
+      place-items: center;
+      background: #14294c;
+      border-radius: 8px;
+      font-size: 23px;
+    }
+
+    .recent small {
+      color: var(--muted);
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 13px;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1100px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+
+      .right-rail {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 750px) {
+      .topbar {
+        flex-wrap: wrap;
+        padding: 14px;
+      }
+
+      .brand {
+        min-width: 0;
+        flex: 1;
+        font-size: 20px;
+      }
+
+      .topnav {
+        display: none;
+      }
+
+      .search {
+        flex-basis: 100%;
+      }
+
+      .layout {
+        grid-template-columns: 65px minmax(0, 1fr);
+      }
+
+      .sidebar {
+        padding: 12px 5px;
+      }
+
+      .side-link {
+        padding: 14px 2px;
+        text-align: center;
+        font-size: 11px;
+      }
+
+      .promo {
+        display: none;
+      }
+
+      main {
+        padding: 12px;
+      }
+
+      .hero {
+        min-height: 320px;
+        padding: 18px;
+      }
+
+      .hero-art {
+        opacity: 0.3;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .categories {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .game-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .right-rail {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      🎮 ARCADE <span>VAULT</span>
+      <div class="tagline">PLAY · EXPLORE · RELIVE</div>
+    </div>
+
+    <input
+      class="search"
+      id="search"
+      type="search"
+      placeholder="Search for games..."
+      aria-label="Search games"
+    >
+
+    <nav class="topnav">
+      <a href="#home">⌂ Home</a>
+      <a href="#library">🎮 Library</a>
+      <a href="#about">ⓘ About</a>
+    </nav>
+  </header>
+
+  <div class="layout" id="home">
+    <aside class="sidebar">
+      <button class="side-link active" data-filter="all">⌂ Home</button>
+      <button class="side-link" data-filter="all">🎮 Library</button>
+      <button class="side-link" data-filter="all">▦ Categories</button>
+      <button class="side-link" data-filter="favorites">♡ Favorites</button>
+
+      <div class="promo">
+        <div class="promo-icon">🎮</div>
+        <strong>Play Anywhere</strong>
+        <p>No downloads. No installs.<br>Just great games.</p>
+      </div>
+    </aside>
+
+    <main>
+      <div class="columns">
+        <div>
+          <section class="hero">
+            <div class="hero-content">
+              <span class="eyebrow">FEATURED GAME</span>
+              <h1>Among Us</h1>
+              <p>
+                Work together... or don't. Find your next favorite
+                game and jump into the action right from your browser.
+              </p>
+
+              <div class="chips">
+                <span class="chip">Multiplayer</span>
+                <span class="chip">Strategy</span>
+                <span class="chip">Action</span>
+              </div>
+
+              <button class="primary" id="play-featured">
+                ▶ Play Now
+              </button>
+
+              <button class="secondary" id="favorite-featured">
+                ☆ Add to Favorites
+              </button>
+            </div>
+
+            <div class="hero-art" aria-hidden="true">🚀 👨‍🚀</div>
+          </section>
+
+          <h2 class="section-title">Browse by Category</h2>
+
+          <section class="categories">
+            <button class="category" data-category="all">
+              <div class="category-icon">★</div>
+              <strong>All Games</strong>
+              <small>View all games →</small>
+            </button>
+
+            <button class="category" data-category="Action">
+              <div class="category-icon">🎮</div>
+              <strong>Action</strong>
+              <small>Fast-paced fun</small>
+            </button>
+
+            <button class="category" data-category="Adventure">
+              <div class="category-icon">🧩</div>
+              <strong>Adventure</strong>
+              <small>Explore new worlds</small>
+            </button>
+
+            <button class="category" data-category="RPG">
+              <div class="category-icon">🏆</div>
+              <strong>RPG</strong>
+              <small>Level up and build</small>
+            </button>
+
+            <button class="category" data-category="Multiplayer">
+              <div class="category-icon">👥</div>
+              <strong>Multiplayer</strong>
+              <small>Play with friends</small>
+            </button>
+
+            <button class="category" data-category="Retro">
+              <div class="category-icon">▣</div>
+              <strong>Retro</strong>
+              <small>Classic favorites</small>
+            </button>
+          </section>
+
+          <div class="games-heading" id="library">
+            <h2 class="section-title">Popular Games</h2>
+            <button id="view-all">View All →</button>
+          </div>
+
+          <section class="game-grid" id="game-grid">
+            <article class="game-card"
+              data-name="Among Us"
+              data-tags="Multiplayer Strategy Action">
+              <div class="game-art">🚀</div>
+              <div class="game-info">
+                <strong>Among Us</strong>
+                <div class="chips">
+                  <span class="chip">Multiplayer</span>
+                  <span class="chip">Strategy</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="game-card"
+              data-name="Minecraft Classic"
+              data-tags="Sandbox Adventure Retro">
+              <div class="game-art">🟩</div>
+              <div class="game-info">
+                <strong>Minecraft Classic</strong>
+                <div class="chips">
+                  <span class="chip">Sandbox</span>
+                  <span class="chip">Adventure</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="game-card"
+              data-name="Terraria"
+              data-tags="Sandbox RPG Adventure">
+              <div class="game-art">🌳</div>
+              <div class="game-info">
+                <strong>Terraria</strong>
+                <div class="chips">
+                  <span class="chip">Sandbox</span>
+                  <span class="chip">RPG</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="game-card"
+              data-name="Stardew Valley"
+              data-tags="RPG Simulation Adventure">
+              <div class="game-art">🏡</div>
+              <div class="game-info">
+                <strong>Stardew Valley</strong>
+                <div class="chips">
+                  <span class="chip">RPG</span>
+                  <span class="chip">Simulation</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="game-card"
+              data-name="Hollow Knight"
+              data-tags="Action Adventure">
+              <div class="game-art">👻</div>
+              <div class="game-info">
+                <strong>Hollow Knight</strong>
+                <div class="chips">
+                  <span class="chip">Action</span>
+                  <span class="chip">Adventure</span>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <div class="notice" id="about">
+            <strong>About Arcade Vault:</strong>
+            A browser gaming portal built for GitHub Pages.
+            These are sample listings; actual playable versions
+            must be connected before the games can launch.
+          </div>
+        </div>
+
+        <aside class="right-rail">
+          <section class="rail-panel">
+            <h2>ϟ Quick Launch</h2>
+            <p>Discover something new or find a favorite.</p>
+
+            <button class="quick" id="random-game">
+              ◇ Random Game <span>›</span>
+            </button>
+
+            <button class="quick" id="top-rated">
+              ☆ Top Rated <span>›</span>
+            </button>
+
+            <button class="quick" id="new-releases">
+              ▣ New Releases <span>›</span>
+            </button>
+
+            <button class="quick" data-category="Multiplayer">
+              ♟ Multiplayer Games <span>›</span>
+            </button>
+          </section>
+
+          <section class="rail-panel">
+            <h2>◷ Recently Added</h2>
+
+            <div class="recent">
+              <div class="recent-icon">🏔️</div>
+              <div><strong>Celeste</strong><br><small>Platformer</small></div>
+            </div>
+
+            <div class="recent">
+              <div class="recent-icon">💀</div>
+              <div><strong>The Binding of Isaac</strong><br><small>Roguelike</small></div>
+            </div>
+
+            <div class="recent">
+              <div class="recent-icon">🌀</div>
+              <div><strong>Portal 2</strong><br><small>Puzzle</small></div>
+            </div>
+
+            <div class="recent">
+              <div class="recent-icon">❤️</div>
+              <div><strong>Undertale</strong><br><small>RPG</small></div>
+            </div>
+
+            <div class="recent">
+              <div class="recent-icon">🃏</div>
+              <div><strong>Slay the Spire</strong><br><small>Card Game</small></div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const search = document.getElementById("search");
+    const cards = [...document.querySelectorAll(".game-card")];
+
+    let activeCategory = "all";
+    const favorites = new Set();
+
+    function updateGames() {
+      const query = search.value.trim().toLowerCase();
+
+      cards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const tags = card.dataset.tags.toLowerCase();
+
+        const matchesSearch =
+          name.includes(query) || tags.includes(query);
+
+        const matchesCategory =
+          activeCategory === "all" ||
+          (
+            activeCategory === "favorites"
+              ? favorites.has(card.dataset.name)
+              : card.dataset.tags.split(" ").includes(activeCategory)
+          );
+
+        card.hidden = !(matchesSearch && matchesCategory);
+      });
+    }
+
+    search.addEventListener("input", updateGames);
+
+    document.querySelectorAll("[data-category]").forEach(button => {
+      button.addEventListener("click", () => {
+        activeCategory = button.dataset.category;
+        updateGames();
+
+        document.getElementById("library").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
+    });
+
+    document.querySelectorAll(".side-link").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".side-link").forEach(item => {
+          item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        activeCategory = button.dataset.filter;
+        updateGames();
+      });
+    });
+
+    document.getElementById("favorite-featured")
+      .addEventListener("click", event => {
+        const name = "Among Us";
+
+        if (favorites.has(name)) {
+          favorites.delete(name);
+          event.currentTarget.textContent = "☆ Add to Favorites";
+        } else {
+          favorites.add(name);
+          event.currentTarget.textContent = "★ Added to Favorites";
+        }
+
+        updateGames();
+      });
+
+    document.getElementById("view-all").addEventListener("click", () => {
+      activeCategory = "all";
+      search.value = "";
+      updateGames();
+    });
+
+    document.getElementById("random-game").addEventListener("click", () => {
+      const visibleCards = cards.filter(card => !card.hidden);
+
+      if (visibleCards.length === 0) {
+        alert("No games match your current search.");
+        return;
+      }
+
+      const card = visibleCards[
+        Math.floor(Math.random() * visibleCards.length)
+      ];
+
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    document.getElementById("play-featured").addEventListener("click", () => {
+      alert(
+        "The website is ready for game integration. " +
+        "A playable browser version of this game has not been connected yet."
+      );
+    });
+
+    document.getElementById("top-rated").addEventListener("click", () => {
+      alert("Game ratings will be added in a later step.");
+    });
+
+    document.getElementById("new-releases").addEventListener("click", () => {
+      alert("New releases will be added in a later step.");
+    });
+  </script>
+</body>
+</html>
