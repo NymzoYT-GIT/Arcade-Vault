@@ -821,11 +821,8 @@
     });
 
     document.getElementById("play-featured").addEventListener("click", () => {
-      alert(
-        "The website is ready for game integration. " +
-        "A playable browser version of this game has not been connected yet."
-      );
-    });
+  window.location.href = "play.html?game=amongus";
+});
 
     document.getElementById("top-rated").addEventListener("click", () => {
       alert("Game ratings will be added in a later step.");
