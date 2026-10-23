@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050b18">
+  <title>Play Game | Arcade Vault</title>
+
+  <style>
+    :root {
+      --bg: #050b18;
+      --panel: #081529;
+      --border: #183555;
+      --cyan: #08d9f4;
+      --purple: #a52cff;
+      --text: #eef7ff;
+      --muted: #9db7d7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 24px;
+      background: #040a16;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      font-size: 23px;
+      font-weight: bold;
+    }
+
+    .brand span { color: var(--cyan); }
+
+    a { color: var(--cyan); text-decoration: none; }
+
+    button {
+      padding: 10px 15px;
+      color: var(--text);
+      background: #0c1d35;
+      border: 1px solid var(--cyan);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    button:hover { background: #15304c; }
+
+    main {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .game-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    h1 { margin: 0 0 6px; }
+
+    .muted { color: var(--muted); }
+
+    .player {
+      position: relative;
+      display: grid;
+      min-height: 420px;
+      place-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at center, #111e43, #030815 75%);
+      border: 1px solid #4a36a6;
+      border-radius: 14px;
+      box-shadow: 0 0 25px #822bff12;
+    }
+
+    .placeholder {
+      max-width: 520px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .placeholder .icon {
+      font-size: 64px;
+      margin-bottom: 15px;
+    }
+
+    .placeholder h2 { margin: 0 0 12px; }
+
+    .placeholder p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 12px;
+      color: #b9c9e0;
+      background: #10213a;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .info {
+      margin-top: 22px;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 15px; }
+      .brand { font-size: 18px; }
+      main { padding: 14px; }
+      .player { min-height: 340px; }
+      .placeholder { padding: 18px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">🎮 ARCADE <span>VAULT</span></div>
+    <a href="index.html">← Back to Library</a>
+  </header>
+
+  <main>
+    <section class="game-heading">
+      <div>
+        <h1 id="game-title">Loading game...</h1>
+        <div class="muted">Arcade Vault Game Player</div>
+      </div>
+
+      <button id="fullscreen">⛶ Fullscreen</button>
+    </section>
+
+    <section class="player" id="player">
+      <div class="placeholder">
+        <div class="icon">🎮</div>
+        <h2 id="player-heading">Your game goes here</h2>
+        <p id="player-message">
+          The player interface is ready. A compatible browser game
+          or emulator still needs to be connected.
+        </p>
+        <span class="status" id="player-status">
+          Runtime not connected
+        </span>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <span class="muted">Controls: depend on the selected game</span>
+      <button id="reload">↻ Reload Page</button>
+    </section>
+
+    <section class="info">
+      <h2>About this game</h2>
+      <p class="muted" id="game-description">
+        Arcade Vault will launch compatible games directly in this
+        player without requiring visitors to install an application.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const game = params.get("game") || "demo";
+
+    const games = {
+      demo: {
+        title: "Arcade Vault Demo",
+        description:
+          "This is the initial player page. No game runtime has been connected yet."
+      },
+      amongus: {
+        title: "Among Us",
+        description:
+          "A compatible, authorized browser version must be configured before this game can launch."
+      },
+      dosdemo: {
+        title: "DOS Game Demo",
+        description:
+          "This slot will be used to test a DOS game with a compatible browser emulator and authorized game files."
+      }
+    };
+
+    const selected = games[game] || {
+      title: game.replace(/[-_]/g, " "),
+      description:
+        "This game does not have a configured browser runtime yet."
+    };
+
+    document.title = selected.title + " | Arcade Vault";
+    document.getElementById("game-title").textContent = selected.title;
+    document.getElementById("player-heading").textContent =
+      selected.title;
+    document.getElementById("game-description").textContent =
+      selected.description;
+
+    document.getElementById("fullscreen").addEventListener("click", async () => {
+      const player = document.getElementById("player");
+
+      try {
+        if (!document.fullscreenElement) {
+          await player.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      } catch (error) {
+        alert("Fullscreen is not available in this browser.");
+      }
+    });
+
+    document.getElementById("reload").addEventListener("click", () => {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>
