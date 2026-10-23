@@ -268,6 +268,33 @@
     document.getElementById("reload").addEventListener("click", () => {
       window.location.reload();
     });
+     // Arcade Vault: js-dos test player
+    if (game === "dosdemo") {
+      const player = document.getElementById("dos-player");
+
+      if (typeof Dos === "function") {
+        player.innerHTML = "";
+
+        player.style.height = "420px";
+
+        try {
+          Dos(player, {
+            url: "https://v8.js-dos.com/bundles/digger.jsdos"
+          });
+        } catch (error) {
+          player.innerHTML =
+            '<p style="color:#ff9b9b;padding:20px;">' +
+            'The DOS game could not start. Please reload and try again.' +
+            '</p>';
+          console.error("js-dos error:", error);
+        }
+      } else {
+        document.getElementById("player-message").textContent =
+          "The js-dos library failed to load. Check your internet connection.";
+        document.getElementById("player-status").textContent =
+          "Emulator failed to load";
+      }
+    }
   </script>
 </body>
 </html>
